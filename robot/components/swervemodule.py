@@ -11,7 +11,9 @@ MAX_DEG = 360
 
 WHEEL_DIAMETER = 4/12  # 4 Inches
 WHEEL_CIRCUMFERENCE = WHEEL_DIAMETER * math.pi
-WHEEL_TICKS_PER_REV = 55000
+
+# FIXME: Make this number more accurate. I'd bet my life that it's not exactly 55,000
+WHEEL_TICKS_PER_REV = 55_000
 
 
 class SwerveModule:
@@ -136,6 +138,7 @@ class SwerveModule:
         :param voltage: a voltage value between 0 and 5
         """
 
+        # FIXME: This shouldn't be 4050. In fact it should be a reference to the constant
         return (voltage/5)*4050
 
     @staticmethod
@@ -156,6 +159,7 @@ class SwerveModule:
         :param tick: a tick value between 0 and 4050
         """
 
+        # FIXME: This shouldn't be 4050. In face it should be a reference to the constant
         return (tick/4050)*5
 
     def zero_encoder(self):

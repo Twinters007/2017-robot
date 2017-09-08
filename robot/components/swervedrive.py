@@ -282,6 +282,9 @@ class SwerveDrive:
 
         ratio = math.hypot(self.length, self.width)
         # Velocities per quadrant
+        
+        # TODO: Fix this math. Look at the whitepaper
+
         leftY = self._requested_vectors['fwd'] - (self._requested_vectors['rcw'] * (self.width / ratio))
         rightY = self._requested_vectors['fwd'] + (self._requested_vectors['rcw'] * (self.width / ratio))
         frontX = self._requested_vectors['strafe'] + (self._requested_vectors['rcw'] * (self.length / ratio))
@@ -299,6 +302,8 @@ class SwerveDrive:
 
         rr_speed = math.hypot(rightY, rearX)
         rr_angle = math.degrees(math.atan2(rearX, rightY))
+        
+
 
         # Assigns the speeds and angles in dictionaries
         self._requested_speeds['front_right'] = fr_speed
