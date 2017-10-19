@@ -64,7 +64,7 @@ class SwerveModule:
         self._pid_controller.enable()
 
         # State variables
-        self.allow_reverse = kwargs.pop('allow_reverse', True)
+        self.allow_reverse = kwargs.pop('allow_reverse', False)
         self.debugging = self.sd.getAutoUpdateValue('drive/%s/debugging' % self.sd_prefix, False)
 
         self.has_drive_encoder = kwargs.pop('has_drive_encoder', False)

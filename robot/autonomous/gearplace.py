@@ -6,77 +6,6 @@ from controllers import angle_controller, pos_controller, position_history, posi
 from magicbot.state_machine import timed_state, state, AutonomousStateMachine
 from magicbot.magic_tunable import tunable
 
-class GearPlace(MiddleGearPlace, SideGearPlace):
-    """
-    This is the main autonomous for 1418's 2017 robot. This class inherits from 
-    the MiddleGearPlace and SideGearPlace classes. By changing the position
-    variable in NetworkTables the autonomous mode can be configured to place a
-    gear and shoot from any position. The configuration is usually done through
-    our dashboard (web ui).
-    """
-    
-    MODE_NAME = 'Gear Place'
-    DEFAULT = True
-    DISABLED = False
-
-    angle_ctrl = angle_controller.AngleController
-    moving_angle_ctrl = angle_controller.MovingAngleController
-
-    x_ctrl = pos_controller.XPosController
-    y_ctrl = pos_controller.YPosController
-
-    gear_picker = gearpicker.GearPicker
-
-    # Position tunable should be one of four things
-    # 'middle_left' - middle gear place with left boiler
-    # 'middle_right' - middle gear place with right boiler
-    # 'left' - left side gear place
-    # 'right' - right side gear place
-    position = tunable('left')
-
-    shoot = tunable(False)
-
-    def initialize(self):
-        MiddleGearPlace.initialize(self)
-        SideGearPlace.initialize(self)
-
-    @state(first=True)
-    def first_state(self):
-        self.gear_picker._picker_state = 2
-
-        if self.position == 'right':
-            self.s_direction = 1
-            self.position = 'side'
-        elif self.position == 'left':
-            self.s_direction = -1
-            self.position = 'side'
-        elif self.position == 'middle_left':
-            self.m_direction = 1
-            self.position = 'middle'
-        elif self.position == 'middle_right':
-            self.m_direction = -1
-            self.position = 'middle'
-
-        print('Starting ', self.position, ' gear place')
-
-        self.next_state(self.position + '_start')
-
-    @state
-    def transition(self):
-        if self.shoot:
-            self.next_state(self.position + '_start_shoot')
-        else:
-            self.next_state(self.position + '_end')
-
-    @state
-    def failed(self):
-        self.drive.debug(debug_modules=True)
-        self.next_state('finish')
-
-    @state
-    def finish(self):
-        self.drive.flush()
-        self.done()
 
 
 class MiddleGearPlace(VictisAuto):
@@ -411,3 +340,76 @@ class SideGearPlace(VictisAuto):
     @state
     def side_end(self):
         self.next_state('finish')
+
+
+class GearPlace(MiddleGearPlace, SideGearPlace):
+    """
+    This is the main autonomous for 1418's 2017 robot. This class inherits from
+    the MiddleGearPlace and SideGearPlace classes. By changing the position
+    variable in NetworkTables the autonomous mode can be configured to place a
+    gear and shoot from any position. The configuration is usually done through
+    our dashboard (web ui).
+    """
+
+    MODE_NAME = 'Gear Place'
+    DEFAULT = True
+    DISABLED = False
+
+    angle_ctrl = angle_controller.AngleController
+    moving_angle_ctrl = angle_controller.MovingAngleController
+
+    x_ctrl = pos_controller.XPosController
+    y_ctrl = pos_controller.YPosController
+
+    gear_picker = gearpicker.GearPicker
+
+    # Position tunable should be one of four things
+    # 'middle_left' - middle gear place with left boiler
+    # 'middle_right' - middle gear place with right boiler
+    # 'left' - left side gear place
+    # 'right' - right side gear place
+    position = tunable('left')
+
+    shoot = tunable(False)
+
+    def initialize(self):
+        MiddleGearPlace.initialize(self)
+        SideGearPlace.initialize(self)
+
+    @state(first=True)
+    def first_state(self):
+        self.gear_picker._picker_state = 2
+
+        if self.position == 'right':
+            self.s_direction = 1
+            self.position = 'side'
+        elif self.position == 'left':
+            self.s_direction = -1
+            self.position = 'side'
+        elif self.position == 'middle_left':
+            self.m_direction = 1
+            self.position = 'middle'
+        elif self.position == 'middle_right':
+            self.m_direction = -1
+            self.position = 'middle'
+
+        print('Starting ', self.position, ' gear place')
+
+        self.next_state(self.position + '_start')
+
+    @state
+    def transition(self):
+        if self.shoot:
+            self.next_state(self.position + '_start_shoot')
+        else:
+            self.next_state(self.position + '_end')
+
+    @state
+    def failed(self):
+        self.drive.debug(debug_modules=True)
+        self.next_state('finish')
+
+    @state
+    def finish(self):
+        self.drive.flush()
+        self.done()
